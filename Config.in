@@ -1,0 +1,10 @@
+# put links to custom packages here
+
+menu "Target packages"
+endmenu
+
+menu "Host packages"
+endmenu
+
+menu "Linux extensions"
+endmenu
