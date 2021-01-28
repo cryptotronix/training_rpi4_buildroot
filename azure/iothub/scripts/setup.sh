@@ -30,7 +30,7 @@ az group create \
 	--location $location
 
 echo "creating iot hub..."
-iotHubName=${AZ_RESOURCE_GROUP_NAME}_IoTHub
+iotHubName=${AZ_RESOURCE_GROUP_NAME}-IoTHub
 echo "iot hub name: " $iotHubName
 # Create the IoT hub.
 az iot hub create \
