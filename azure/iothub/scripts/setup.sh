@@ -2,6 +2,15 @@
 
 set -e
 
+if [ -z $AZ_RESOURCE_GROUP_NAME ];then
+	echo "please set AZ_RESOURCE_GROUP_NAME. exiting..."
+	exit 1
+fi
+if [ -z $AZ_DEVICE_UUID ];then
+	echo "please set AZ_DEVICE_UUID. exiting..."
+	exit 1
+fi
+
 # This command retrieves the subscription id of the current Azure account.
 subscriptionID=$(az account show --query id -o tsv)
 
@@ -11,8 +20,8 @@ az extension add --name azure-iot
 
 location=westus
 resourceGroup=$AZ_RESOURCE_GROUP_NAME
-iotHubConsumerGroup=IoTTestConsGroup$rand
-containerName=iottest-storage-container$rand
+iotHubConsumerGroup=IoTTrainingConsGroup$rand
+containerName=iottraining-storage-container$rand
 iotDeviceUUID=$AZ_DEVICE_UUID
 
 echo "creating resource group..."
@@ -21,7 +30,7 @@ az group create \
 	--location $location
 
 echo "creating iot hub..."
-iotHubName=IoTTestHub$rand
+iotHubName=${AZ_RESOURCE_GROUP_NAME}_IoTHub
 echo "iot hub name: " $iotHubName
 # Create the IoT hub.
 az iot hub create \
@@ -37,7 +46,7 @@ az iot hub consumer-group create \
     	--name $iotHubConsumerGroup
 
 echo "creating storage account..."
-storageAccountName=iotteststorage$rand
+storageAccountName=iottrainingstorage$rand
 # Create the storage account to be used as a routing destination.
 az storage account create \
 	--name $storageAccountName \
@@ -65,7 +74,7 @@ az storage container create \
     	--public-access off
 
 echo "creating service bus namespace..."
-sbNamespace=IoTTestSBNamespace$rand
+sbNamespace=IoTTrainingSBNamespace$rand
 # Create the Service Bus namespace.
 az servicebus namespace create \
 	--resource-group $resourceGroup \
@@ -74,7 +83,7 @@ az servicebus namespace create \
 echo "service bus namespace: " $sbNamespace
 
 echo "creating service bus queue..."
-sbQueueName=IoTTestSBQueue$rand
+sbQueueName=IoTTrainingSBQueue$rand
 # Create the Service Bus queue to be used as a routing destination.
 az servicebus queue create \
 	--name $sbQueueName \
@@ -82,9 +91,9 @@ az servicebus queue create \
     	--resource-group $resourceGroup
 echo "service bus queue name: " $sbQueueName
 
-endpointName="TestStorageEndpoint"
+endpointName="TrainingStorageEndpoint"
 endpointType="azurestoragecontainer"
-routeName="IoTTestStorageRoute"
+routeName="IoTTrainingStorageRoute"
 condition='level="storage"'
 
 echo "creating storage message endpoint and route..."
@@ -136,9 +145,9 @@ sbqConnectionString=$(az servicebus queue authorization-rule keys list \
 # Show the Service Bus queue connection string.
 echo "service bus queue connection string: " $sbqConnectionString
 
-endpointName="TestSBQueueEndpoint"
+endpointName="TrainingSBQueueEndpoint"
 endpointType="ServiceBusQueue"
-routeName="IoTTestSBQueueRoute"
+routeName="IoTTrainingSBQueueRoute"
 condition='level="queue"'
 
 # Set up the routing endpoint for the Service Bus queue.
@@ -161,8 +170,8 @@ az iot hub route create --name $routeName \
   --enabled \
   --condition $condition
 
-echo "creating test device..."
-# Create the IoT device identity to be used for testing.
+echo "creating demo device..."
+# Create the IoT device identity to be used for demoing.
 az iot hub device-identity create  \
 	--hub-name $iotHubName \
 	--auth-method x509_ca \

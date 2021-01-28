@@ -9,7 +9,7 @@ messages_to_send = 10
 
 async def main():
     hostname = (os.getenv("AZ_RESOURCE_GROUP_NAME").strip() +
-                ".azure-devices.net")
+                "_IotHub.azure-devices.net")
     device_id = os.getenv("AZ_DEVICE_UUID").strip()
 
     x509 = X509(
