@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+# # # # # # # # # #
+#    WARNING      #
+# MUST BE UNIQUE  #
+# # # # # # # # # #
+export AZ_RESOURCE_GROUP_NAME=
+
+# GENERATE IN ADVANCE
+export AZ_DEVICE_UUID=

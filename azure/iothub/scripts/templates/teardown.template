@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+# THE SAME ONE AS USED IN SETUP
+export AZ_RESOURCE_GROUP_NAME=

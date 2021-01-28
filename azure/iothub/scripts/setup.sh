@@ -1,4 +1,7 @@
 #!/bin/bash
+
+set -e
+
 # This command retrieves the subscription id of the current Azure account.
 subscriptionID=$(az account show --query id -o tsv)
 
@@ -7,10 +10,10 @@ rand=$RANDOM
 az extension add --name azure-iot
 
 location=westus
-resourceGroup=IoTTestGroup$rand
+resourceGroup=$AZ_RESOURCE_GROUP_NAME
 iotHubConsumerGroup=IoTTestConsGroup$rand
 containerName=iottest-storage-container$rand
-iotDeviceName=TestDevice$rand
+iotDeviceUUID=$AZ_DEVICE_UUID
 
 echo "creating resource group..."
 az group create \
@@ -158,16 +161,17 @@ az iot hub route create --name $routeName \
   --enabled \
   --condition $condition
 
-#echo "creating test device..."
-## Create the IoT device identity to be used for testing.
-#az iot hub device-identity create \
-#	--device-id $iotDeviceName \
-#    	--hub-name $iotHubName
-## Retrieve the information about the device identity, then copy the primary key to
-##   Notepad. You need this to run the device simulation during the testing phase.
-#echo "device details: "
-#az iot hub device-identity show \
-#	--device-id $iotDeviceName \
-#    	--hub-name $iotHubName
+echo "creating test device..."
+# Create the IoT device identity to be used for testing.
+az iot hub device-identity create  \
+	--hub-name $iotHubName \
+	--auth-method x509_ca \
+	--device-id $iotDeviceUUID \
+# Retrieve the information about the device identity, then copy the primary key to
+#   Notepad. You need this to run the device simulation during the testing phase.
+echo "device details: "
+az iot hub device-identity show \
+	--device-id $iotDeviceUUID \
+    	--hub-name $iotHubName
 
 echo "done!"

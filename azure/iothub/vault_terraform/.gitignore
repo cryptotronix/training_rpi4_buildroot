@@ -1,0 +1,8 @@
+# TERRAFORM ARTIFACTS
+terraform.tfstate
+terraform.tfstate.backup
+.terraform
+.terraform.lock.hcl
+
+# OTHER
+plan.bin

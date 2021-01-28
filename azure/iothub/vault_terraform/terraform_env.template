@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# INITIAL VAULT SETUP
+export VAULT_ADDR=
+export VAULT_TOKEN=
+
+# AFTER CA HAS BEEN GENERATED
+export AZ_DEVICE_UUID=
+
+# AFTER CA UPLOADED TO AZURE
+export AZ_POP_CODE=
+
